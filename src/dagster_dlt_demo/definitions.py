@@ -1,9 +1,11 @@
-from pathlib import Path
+import dagster as dg
 
-from dagster import definitions, load_from_defs_folder
+from dagster_dlt_demo.defs.jobs import dummy_job
+from dagster_dlt_demo.defs.sensor import sftp_sensor
 
-
-@definitions
-def defs():
-    return load_from_defs_folder(project_root=Path(__file__).parent)
+defs = dg.Definitions(
+    assets=dg.load_assets_from_package_name("dagster_dlt_demo.defs.assets"),
+    jobs = [dummy_job],
+    sensors=[sftp_sensor]
+)
 
