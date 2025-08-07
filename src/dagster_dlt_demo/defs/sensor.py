@@ -65,6 +65,7 @@ def sftp_sensor(name: str, job_def, filename_pattern: str = "", remote_path: str
 sensors = [
     sftp_sensor(
         name="sftp_sensor",
+        job_def=dummy_job,
         filename_pattern="orders.csv",
         remote_path="input/",
     )
