@@ -12,7 +12,6 @@ from dagster import AssetExecutionContext
 
 from dagster_dlt_demo.common.utils.logging_util import Logger
 from dagster_dlt import DagsterDltResource, DagsterDltTranslator, dlt_assets
-from dagster_dlt_demo.defs.resources import dlt_resource
 
 
 
@@ -60,7 +59,7 @@ def create_sftp_source(resource_name: str, file_glob: str):
     
     return sftp_source
 
-def create_dlt_assets(resource_name: str, file_glob: str, dlt_resource=dlt_resource):
+def create_dlt_assets(resource_name: str, file_glob: str):
     source = create_sftp_source(resource_name, file_glob)
     
     @dlt_assets(
@@ -74,7 +73,7 @@ def create_dlt_assets(resource_name: str, file_glob: str, dlt_resource=dlt_resou
         name=f"{resource_name}_assets",
         dagster_dlt_translator=CustomDagsterDltTranslator(),
     )
-    def assets(context: AssetExecutionContext, dlt_resource: DagsterDltResource = dlt_resource):
+    def assets(context: AssetExecutionContext, dlt_resource: DagsterDltResource):
         dlt.config['destination.filesystem.layout'] = "{table_name}/{YYYY}{MM}{DD}/{mm}/{load_id}.{file_id}.{ext}"
         dlt.secrets['destination.filesystem.bucket_url'] = dg.EnvVar('DESTINATION__FILESYSTEM__CREDENITIALS__PROJECT_ID')
         dlt.secrets['destination.filesystem.credentials.bucket_url'] = dg.EnvVar('DESTINATION__BUCKET_URL')
