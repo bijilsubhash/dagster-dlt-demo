@@ -72,7 +72,7 @@ def create_dlt_assets(resource_name: str, file_glob: str):
         ),
         name=f"{resource_name}_assets",
         dagster_dlt_translator=CustomDagsterDltTranslator(),
-        group_name="dlt-demo"
+        group_name="dltdemo"
     )
     def assets(context: AssetExecutionContext, dlt_resource: DagsterDltResource):
         dlt.config['destination.filesystem.layout'] = "{table_name}/{YYYY}{MM}{DD}/{mm}/{load_id}.{file_id}.{ext}"
