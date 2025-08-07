@@ -5,7 +5,7 @@ from dlt.extract.resource import DltResource
 import polars as pl
 import dagster as dg
 
-from typing import Iterable
+from collections.abc import Iterable
 
 from dlt import pipeline
 from dlt.sources.filesystem import filesystem
@@ -30,9 +30,9 @@ class CustomDagsterDltTranslator(DagsterDltTranslator):
     
     def get_deps_asset_keys(self, resource: DltResource) -> Iterable[dg.AssetKey]:
         resource_to_upstream = {
-            "dlt_customer": [dg.AssetKey("customer")],
-            "dlt_order": [dg.AssetKey("order")],
-            "dlt_product": [dg.AssetKey("product")]
+            "dlt_customers": [dg.AssetKey("customer")],
+            "dlt_orders": [dg.AssetKey("order")],
+            "dlt_products": [dg.AssetKey("product")]
         }
         return resource_to_upstream.get(resource.name, [])
     
