@@ -18,10 +18,10 @@ from dagster_dlt import DagsterDltResource, DagsterDltTranslator, dlt_assets
 logger = Logger(__name__)
 
 dlt.config['destination.filesystem.layout'] = "{table_name}/{YYYY}{MM}{DD}/{mm}/{load_id}.{file_id}.{ext}"
-dlt.secrets['destination.filesystem.bucket_url'] = dg.EnvVar('DESTINATION__FILESYSTEM__CREDENITIALS__PROJECT_ID').get_value() 
-dlt.secrets['destination.filesystem.credentials.bucket_url'] = dg.EnvVar('DESTINATION__BUCKET_URL').get_value()
-dlt.secrets['destination.filesystem.credentials.private_key'] = dg.EnvVar('DESTINATION__FILESYSTEM__CREDENITIALS__PRIVATE_KEY').get_value()
-dlt.secrets['destination.filesystem.credentials.client_email'] = dg.EnvVar('DESTINATION__FILESYSTEM__CREDENITIALS__CLIENT_EMAIL').get_value()
+dlt.secrets['destination.filesystem.bucket_url'] = dg.EnvVar('DESTINATION__FILESYSTEM__CREDENITIALS__PROJECT_ID')
+dlt.secrets['destination.filesystem.credentials.bucket_url'] = dg.EnvVar('DESTINATION__BUCKET_URL')
+dlt.secrets['destination.filesystem.credentials.private_key'] = dg.EnvVar('DESTINATION__FILESYSTEM__CREDENITIALS__PRIVATE_KEY')
+dlt.secrets['destination.filesystem.credentials.client_email'] = dg.EnvVar('DESTINATION__FILESYSTEM__CREDENITIALS__CLIENT_EMAIL')
 
 class CustomDagsterDltTranslator(DagsterDltTranslator):
     def get_asset_spec(self, data) -> dg.AssetSpec:
