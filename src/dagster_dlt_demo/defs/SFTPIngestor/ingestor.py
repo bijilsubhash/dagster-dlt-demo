@@ -1,6 +1,7 @@
 import io
 
 import dlt
+from dlt.extract.resource import DltResource
 import polars as pl
 import dagster as dg
 
@@ -23,8 +24,15 @@ class CustomDagsterDltTranslator(DagsterDltTranslator):
         default_spec = super().get_asset_spec(data)
         return default_spec.replace_attributes(
             key=dg.AssetKey(f"dlt_{data.resource.name}"),
-            deps=dg.AssetKey(f"{data.resource.name}")
         )
+    
+    def get_deps_asset_keys(self, resource: DltResource) -> io.Iterable[dg.AssetKey]:
+        resource_to_upstream = {
+            "dlt_customer": [dg.AssetKey("customer")],
+            "dlt_order": [dg.AssetKey("order")],
+            "dlt_product": [dg.AssetKey("product")]
+        }
+        return resource_to_upstream.get(resource.name, [])
     
 def create_sftp_source(resource_name: str, file_glob: str):
     @dlt.source(name=f"{resource_name}_source")
