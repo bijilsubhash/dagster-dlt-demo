@@ -8,6 +8,7 @@ setup(
         "dagster",
         "dagster-cloud",
         "paramiko>=3.3.1",
+        "python-json-logger>=2.0.9",
     ],
     extras_require={"dev": ["dagster-webserver"]},
 )
