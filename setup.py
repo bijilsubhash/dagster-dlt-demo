@@ -8,6 +8,8 @@ setup(
         "dagster",
         "dagster-cloud",
         "dagster-dlt",
+        "dagster-gcp",
+        "dlt[filesystem]",
         "paramiko>=3.3.1",
         "python-json-logger>=2.0.9",
     ],
