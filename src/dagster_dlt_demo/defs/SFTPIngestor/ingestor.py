@@ -22,7 +22,7 @@ class CustomDagsterDltTranslator(DagsterDltTranslator):
         """Overrides asset spec to override upstream asset key to be a single source asset."""
         default_spec = super().get_asset_spec(data)
         return default_spec.replace_attributes(
-            key=dg.AssetKey(f"{data.resource.name}"),
+            key=dg.AssetKey(f"dlt_{data.resource.name}"),
             deps=dg.AssetKey(f"{data.resource.name}")
         )
     
