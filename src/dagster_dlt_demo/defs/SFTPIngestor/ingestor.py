@@ -17,12 +17,6 @@ from dagster_dlt import DagsterDltResource, DagsterDltTranslator, dlt_assets
 
 logger = Logger(__name__)
 
-dlt.config['destination.filesystem.layout'] = "{table_name}/{YYYY}{MM}{DD}/{mm}/{load_id}.{file_id}.{ext}"
-dlt.secrets['destination.filesystem.bucket_url'] = dg.EnvVar('DESTINATION__FILESYSTEM__CREDENITIALS__PROJECT_ID')
-dlt.secrets['destination.filesystem.credentials.bucket_url'] = dg.EnvVar('DESTINATION__BUCKET_URL')
-dlt.secrets['destination.filesystem.credentials.private_key'] = dg.EnvVar('DESTINATION__FILESYSTEM__CREDENITIALS__PRIVATE_KEY')
-dlt.secrets['destination.filesystem.credentials.client_email'] = dg.EnvVar('DESTINATION__FILESYSTEM__CREDENITIALS__CLIENT_EMAIL')
-
 class CustomDagsterDltTranslator(DagsterDltTranslator):
     def get_asset_spec(self, data) -> dg.AssetSpec:
         """Overrides asset spec to override upstream asset key to be a single source asset."""
@@ -80,6 +74,11 @@ def create_dlt_assets(resource_name: str, file_glob: str):
         dagster_dlt_translator=CustomDagsterDltTranslator(),
     )
     def assets(context: AssetExecutionContext, dlt_resource: DagsterDltResource):
+        dlt.config['destination.filesystem.layout'] = "{table_name}/{YYYY}{MM}{DD}/{mm}/{load_id}.{file_id}.{ext}"
+        dlt.secrets['destination.filesystem.bucket_url'] = dg.EnvVar('DESTINATION__FILESYSTEM__CREDENITIALS__PROJECT_ID')
+        dlt.secrets['destination.filesystem.credentials.bucket_url'] = dg.EnvVar('DESTINATION__BUCKET_URL')
+        dlt.secrets['destination.filesystem.credentials.private_key'] = dg.EnvVar('DESTINATION__FILESYSTEM__CREDENITIALS__PRIVATE_KEY')
+        dlt.secrets['destination.filesystem.credentials.client_email'] = dg.EnvVar('DESTINATION__FILESYSTEM__CREDENITIALS__CLIENT_EMAIL')
         yield from dlt_resource.run(context=context)
     
     return assets
