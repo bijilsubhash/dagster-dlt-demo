@@ -30,9 +30,9 @@ class CustomDagsterDltTranslator(DagsterDltTranslator):
     
     def get_deps_asset_keys(self, resource: DltResource) -> Iterable[dg.AssetKey]:
         resource_to_upstream = {
-            "dlt_customers": [dg.AssetKey("customer")],
-            "dlt_orders": [dg.AssetKey("order")],
-            "dlt_products": [dg.AssetKey("product")]
+            "customers": [dg.AssetKey("customer")],
+            "orders": [dg.AssetKey("order")],
+            "products": [dg.AssetKey("product")]
         }
         return resource_to_upstream.get(resource.name, [])
     
