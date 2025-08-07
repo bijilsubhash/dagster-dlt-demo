@@ -4,7 +4,6 @@ setup(
     name="dagster_dlt_demo",
     package_dir={"": "src"},
     packages=find_packages(where="src"),
-    py_modules=["main"],
     install_requires=[
         "dagster",
         "dagster-cloud",
