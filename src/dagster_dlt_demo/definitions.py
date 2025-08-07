@@ -13,7 +13,6 @@ defs = dg.Definitions(
         customers_assets, 
         products_assets
         ],
-    jobs = [dummy_job],
     sensors=sensors,
     resources={
             "dlt_resource": DagsterDltResource(),
