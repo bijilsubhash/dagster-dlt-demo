@@ -1,11 +1,10 @@
 import dagster as dg
 
 from dagster_dlt_demo.defs.jobs import dummy_job
-from dagster_dlt_demo.defs.sensor import sftp_sensor
+from dagster_dlt_demo.defs.sensor import sensors
 
 defs = dg.Definitions(
     assets=dg.load_assets_from_package_name("dagster_dlt_demo.defs.assets"),
-    jobs = [dummy_job],
-    sensors=[sftp_sensor]
+    jobs = [dummy_job]
 )
 
