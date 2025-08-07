@@ -9,6 +9,7 @@ setup(
         "dagster-cloud",
         "dagster-dlt",
         "dagster-gcp",
+        "dagster-duckdb",
         "dlt[filesystem]",
         "paramiko>=3.3.1",
         "polars>=1.32.0",
