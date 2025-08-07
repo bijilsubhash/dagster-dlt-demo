@@ -5,6 +5,7 @@ from dagster_dlt_demo.defs.sensor import sensors
 
 defs = dg.Definitions(
     assets=dg.load_assets_from_package_name("dagster_dlt_demo.defs.assets"),
-    jobs = [dummy_job]
+    jobs = [dummy_job],
+    sensors=sensors
 )
 
