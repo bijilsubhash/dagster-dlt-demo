@@ -1,0 +1,4 @@
+locations:
+  - location_name: dagster_dlt_demo
+    code_source:
+      module_name: dagster_dlt_demo.definitions
