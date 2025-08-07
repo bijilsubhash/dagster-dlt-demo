@@ -5,6 +5,8 @@ from dlt.extract.resource import DltResource
 import polars as pl
 import dagster as dg
 
+from typing import Iterable
+
 from dlt import pipeline
 from dlt.sources.filesystem import filesystem
 from dlt.common.configuration.specs import SFTPCredentials
@@ -26,7 +28,7 @@ class CustomDagsterDltTranslator(DagsterDltTranslator):
             key=dg.AssetKey(f"dlt_{data.resource.name}"),
         )
     
-    def get_deps_asset_keys(self, resource: DltResource) -> io.Iterable[dg.AssetKey]:
+    def get_deps_asset_keys(self, resource: DltResource) -> Iterable[dg.AssetKey]:
         resource_to_upstream = {
             "dlt_customer": [dg.AssetKey("customer")],
             "dlt_order": [dg.AssetKey("order")],
