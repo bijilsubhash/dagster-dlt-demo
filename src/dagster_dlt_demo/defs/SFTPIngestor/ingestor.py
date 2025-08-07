@@ -23,6 +23,7 @@ class CustomDagsterDltTranslator(DagsterDltTranslator):
         default_spec = super().get_asset_spec(data)
         return default_spec.replace_attributes(
             key=dg.AssetKey(f"{data.resource.name}"),
+            deps=f"{data.resource.name}"
         )
     
 def create_sftp_source(resource_name: str, file_glob: str):
