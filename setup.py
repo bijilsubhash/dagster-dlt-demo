@@ -7,6 +7,7 @@ setup(
     install_requires=[
         "dagster",
         "dagster-cloud",
+        "dagster-dlt",
         "paramiko>=3.3.1",
         "python-json-logger>=2.0.9",
     ],
