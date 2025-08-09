@@ -26,16 +26,8 @@ class CustomDagsterDltTranslator(DagsterDltTranslator):
         default_spec = super().get_asset_spec(data)
         return default_spec.replace_attributes(
             key=dg.AssetKey(f"dlt_{data.resource.name}"),
-            deps=self.get_deps_asset_keys(data.resource)
+            deps=dg.AssetKey(f"sftp_{data.resource.name}")
         )
-    
-    def get_deps_asset_keys(self, resource: DltResource) -> Iterable[dg.AssetKey]:
-        resource_to_upstream = {
-            "customers": [dg.AssetKey("sftp_customers")],
-            "orders": [dg.AssetKey("sftp_orders")],
-            "products": [dg.AssetKey("sftp_products")]
-        }
-        return resource_to_upstream.get(resource.name, [])
     
 def create_sftp_source(resource_name: str, file_glob: str):
     @dlt.source(name=f"{resource_name}_source")
