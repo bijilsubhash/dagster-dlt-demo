@@ -40,7 +40,7 @@ def create_sftp_source(resource_name: str, file_glob: str):
         @dlt.resource(name=resource_name)
         def resource():
             file = filesystem(
-                bucket_url="eu-central-1.sftpcloud.io/input/20250805",
+                bucket_url="eu-central-1.sftpcloud.io/input/20250809",
                 credentials=SFTPCredentials(
                 sftp_username=dg.EnvVar("userName").get_value(),
                 sftp_password=dg.EnvVar("password").get_value(),
