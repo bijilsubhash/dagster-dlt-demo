@@ -11,6 +11,7 @@ setup(
         "dagster-gcp",
         "dagster-duckdb",
         "dlt[filesystem]",
+        "dlt[gs]",
         "paramiko>=3.3.1",
         "polars>=1.32.0",
         "polars-lts-cpu>=1.32.0",
