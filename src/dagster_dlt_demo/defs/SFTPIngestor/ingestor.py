@@ -21,9 +21,9 @@ from dagster_dlt import DagsterDltResource, DagsterDltTranslator, dlt_assets
 logger = Logger(__name__)
 
 external_asset_keys = {
-    "customers_assets": dg.AssetKey("sftp_customers"),
-    "orders_assets": dg.AssetKey("sftp_orders"),
-    "products_assets": dg.AssetKey("sftp_products")
+    "customers": dg.AssetKey("sftp_customers"),
+    "orders": dg.AssetKey("sftp_orders"),
+    "products": dg.AssetKey("sftxp_products")
 }
 
 class CustomDagsterDltTranslator(DagsterDltTranslator):
@@ -80,7 +80,7 @@ def create_dlt_assets(resource_name: str, file_glob: str):
             destination='filesystem',
             progress="log"
         ),
-        name=f"{resource_name}_assets",
+        name=f"{resource_name}",
         dagster_dlt_translator=CustomDagsterDltTranslator(),
         group_name="dltdemo"
     )
