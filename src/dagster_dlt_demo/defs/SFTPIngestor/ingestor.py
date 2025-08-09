@@ -85,10 +85,10 @@ def create_dlt_assets(resource_name: str, file_glob: str):
     )
     def assets(context: AssetExecutionContext, dlt_resource: DagsterDltResource):
         dlt.config['destination.filesystem.layout'] = "{table_name}/{YYYY}{MM}{DD}/{mm}/{load_id}.{file_id}.{ext}"
-        dlt.secrets['destination.filesystem.bucket_url'] = dg.EnvVar('DESTINATION__FILESYSTEM__CREDENITIALS__PROJECT_ID')
-        dlt.secrets['destination.filesystem.credentials.bucket_url'] = dg.EnvVar('DESTINATION__BUCKET_URL')
-        dlt.secrets['destination.filesystem.credentials.private_key'] = dg.EnvVar('DESTINATION__FILESYSTEM__CREDENITIALS__PRIVATE_KEY')
-        dlt.secrets['destination.filesystem.credentials.client_email'] = dg.EnvVar('DESTINATION__FILESYSTEM__CREDENITIALS__CLIENT_EMAIL')
+        dlt.secrets['destination.filesystem.bucket_url'] = dg.EnvVar('DESTINATION__FILESYSTEM__CREDENITIALS__PROJECT_ID').get_value()
+        dlt.secrets['destination.filesystem.credentials.bucket_url'] = dg.EnvVar('DESTINATION__BUCKET_URL').get_value()
+        dlt.secrets['destination.filesystem.credentials.private_key'] = dg.EnvVar('DESTINATION__FILESYSTEM__CREDENITIALS__PRIVATE_KEY').get_value()
+        dlt.secrets['destination.filesystem.credentials.client_email'] = dg.EnvVar('DESTINATION__FILESYSTEM__CREDENITIALS__CLIENT_EMAIL').get_value()
         yield from dlt_resource.run(context=context)
     
     return assets
