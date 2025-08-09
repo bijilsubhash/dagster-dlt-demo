@@ -24,16 +24,19 @@ class CustomDagsterDltTranslator(DagsterDltTranslator):
     def get_asset_spec(self, data) -> dg.AssetSpec:
         """Overrides asset spec to override upstream asset key to be a single source asset."""
         default_spec = super().get_asset_spec(data)
-        resource_to_upstream = {
-            "customers": dg.AssetKey("sftp_customers"),
-            "orders": dg.AssetKey("sftp_orders"),
-            "products": dg.AssetKey("sftp_products")
-        }
         return default_spec.replace_attributes(
             key=dg.AssetKey(f"dlt_{data.resource.name}"),
-            deps=resource_to_upstream.get(data.resource.name, [])
+            deps=self.get_deps_asset_keys(data.resource)
         )
-        
+    
+    def get_deps_asset_keys(self, resource: DltResource) -> Iterable[dg.AssetKey]:
+        resource_to_upstream = {
+            "customers": [dg.AssetKey("sftp_customers")],
+            "orders": [dg.AssetKey("sftp_orders")],
+            "products": [dg.AssetKey("sftp_products")]
+        }
+        return resource_to_upstream.get(resource.name, [])
+    
 def create_sftp_source(resource_name: str, file_glob: str):
     @dlt.source(name=f"{resource_name}_source")
     def sftp_source():
