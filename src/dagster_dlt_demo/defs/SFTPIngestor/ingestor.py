@@ -31,10 +31,9 @@ class CustomDagsterDltTranslator(DagsterDltTranslator):
     def get_asset_spec(self, data) -> dg.AssetSpec:
         """Overrides asset spec to override upstream asset key to be a single source asset."""
         default_spec = super().get_asset_spec(data)
-        print(default_spec)
         return default_spec.replace_attributes(
             key=dg.AssetKey(f"dlt_{data.resource.name}"),
-            deps=[dg.AssetDep(f"sftp_{data.resource.name}")]
+            deps=[dg.AssetKey(f"sftp_{data.resource.name}")]
         )
     
 def create_sftp_source(resource_name: str, file_glob: str):
