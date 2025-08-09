@@ -12,9 +12,9 @@ defs = dg.Definitions(
         orders_assets, 
         customers_assets, 
         products_assets,
-        dg.AssetSpec(key=dg.AssetKey("sftp_customers")),
-        dg.AssetSpec(key=dg.AssetKey("sftp_orders")),
-        dg.AssetSpec(key=dg.AssetKey("sftp_products"))
+        dg.AssetSpec("sftp_customers"),
+        dg.AssetSpec("sftp_orders"),
+        dg.AssetSpec("sftp_products")
         ],
     sensors=sensors,
     jobs=[dummy_job],
