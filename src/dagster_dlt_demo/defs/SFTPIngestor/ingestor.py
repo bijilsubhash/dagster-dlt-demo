@@ -5,6 +5,7 @@ from dlt.extract.resource import DltResource
 import polars as pl
 import dagster as dg
 
+import os
 from collections.abc import Iterable
 
 from dlt import pipeline
@@ -16,6 +17,8 @@ from dagster import AssetExecutionContext
 from dagster_dlt_demo.common.utils.logging_util import Logger
 from dagster_dlt import DagsterDltResource, DagsterDltTranslator, dlt_assets
 
+from dotenv import load_dotenv
+load_dotenv()
 
 
 logger = Logger(__name__)
@@ -40,11 +43,11 @@ def create_sftp_source(resource_name: str, file_glob: str):
         @dlt.resource(name=resource_name)
         def resource():
             file = filesystem(
-                bucket_url="eu-central-1.sftpcloud.io/input/20250809",
+                bucket_url="sftp://eu-central-1.sftpcloud.io/input/20250809",
                 credentials=SFTPCredentials(
-                sftp_username=dg.EnvVar("userName").get_value(),
-                sftp_password=dg.EnvVar("password").get_value(),
-                sftp_port=dg.EnvVar("port").get_value(),
+                sftp_username=dg.EnvVar("userName").get_value() or os.getenv("userName"),
+                sftp_password=dg.EnvVar("password").get_value() or os.getenv("password"),
+                sftp_port=dg.EnvVar("port").get_value() or os.getenv("port"),
                 sftp_look_for_keys=False,
                 sftp_allow_agent=False,
             ),
@@ -70,25 +73,31 @@ def create_sftp_source(resource_name: str, file_glob: str):
 
 def create_dlt_assets(resource_name: str, file_glob: str):
     source = create_sftp_source(resource_name, file_glob)
+
+    dlt_pipeline = pipeline(
+        pipeline_name=f"{resource_name}_to_duckdb",
+        dataset_name=resource_name,
+        destination='filesystem',
+        progress="log"
+    )
     
     @dlt_assets(
         dlt_source=source(),
-        dlt_pipeline=pipeline(
-            pipeline_name=f"{resource_name}_to_duckdb",
-            dataset_name=f"{resource_name}",
-            destination='filesystem',
-            progress="log"
-        ),
-        name=f"{resource_name}",
+        dlt_pipeline=dlt_pipeline,
+        name=resource_name,
         dagster_dlt_translator=CustomDagsterDltTranslator(external_asset_key=dg.AssetKey(f"sftp_{resource_name}")),
         group_name="dltdemo"
     )
     def assets(context: AssetExecutionContext, dlt_resource: DagsterDltResource):
         dlt.config['destination.filesystem.layout'] = "{table_name}/{YYYY}{MM}{DD}/{mm}/{load_id}.{file_id}.{ext}"
-        dlt.secrets['destination.filesystem.credentials.project_id'] = dg.EnvVar('DESTINATION__FILESYSTEM__CREDENITIALS__PROJECT_ID').get_value() or os.getenv("DESTINATION__FILESYSTEM__CREDENITIALS__PROJECT_ID")
-        dlt.secrets['destination.filesystem.credentials.bucket_url'] = dg.EnvVar('DESTINATION__BUCKET_URL').get_value() or os.getenv("DESTINATION__BUCKET_URL")
-        dlt.secrets['destination.filesystem.credentials.private_key'] = dg.EnvVar('DESTINATION__FILESYSTEM__CREDENITIALS__PRIVATE_KEY').get_value() or os.getenv("DESTINATION__FILESYSTEM__CREDENITIALS__PRIVATE_KEY")
-        dlt.secrets['destination.filesystem.credentials.client_email'] = dg.EnvVar('DESTINATION__FILESYSTEM__CREDENITIALS__CLIENT_EMAIL').get_value() or os.getenv("DESTINATION__FILESYSTEM__CREDENITIALS__CLIENT_EMAIL")
+        os.environ['DESTINATION__FILESYSTEM__CREDENTIALS__PROJECT_ID'] = dg.EnvVar('DESTINATION__FILESYSTEM__CREDENITIALS__PROJECT_ID').get_value() or os.getenv("DESTINATION__FILESYSTEM__CREDENITIALS__PROJECT_ID")
+        os.environ['DESTINATION__FILESYSTEM__CREDENTIALS__BUCKET_URL'] = dg.EnvVar('DESTINATION__BUCKET_URL').get_value() or os.getenv("DESTINATION__BUCKET_URL")
+        os.environ['DESTINATION__FILESYSTEM__CREDENTIALS__PRIVATE_KEY'] = dg.EnvVar('DESTINATION__FILESYSTEM__CREDENITIALS__PRIVATE_KEY').get_value() or os.getenv("DESTINATION__FILESYSTEM__CREDENITIALS__PRIVATE_KEY")
+        os.environ['DESTINATION__FILESYSTEM__CREDENTIALS__CLIENT_EMAIL'] = dg.EnvVar('DESTINATION__FILESYSTEM__CREDENITIALS__CLIENT_EMAIL').get_value() or os.getenv("DESTINATION__FILESYSTEM__CREDENITIALS__CLIENT_EMAIL")
+        print(dlt.secrets['destination.filesystem.credentials.project_id'])
+        print(dlt.secrets['destination.filesystem.credentials.bucket_url'])
+        print(dlt.secrets['destination.filesystem.credentials.private_key'])
+        print(dlt.secrets['destination.filesystem.credentials.client_email'])
         yield from dlt_resource.run(context=context)
     
     return assets

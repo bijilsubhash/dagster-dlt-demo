@@ -16,7 +16,6 @@ defs = dg.Definitions(
         dg.AssetSpec("sftp_orders"),
         dg.AssetSpec("sftp_products")
         ],
-    sensors=sensors,
     jobs=[dummy_job],
     resources={
             "dlt_resource": DagsterDltResource(),
