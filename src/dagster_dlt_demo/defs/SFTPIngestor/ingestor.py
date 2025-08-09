@@ -20,20 +20,18 @@ from dagster_dlt import DagsterDltResource, DagsterDltTranslator, dlt_assets
 
 logger = Logger(__name__)
 
-external_asset_keys = {
-    "dlt_customers_source_customers": dg.AssetDep("sftp_customers"),
-    "dlt_orders_source_orders": dg.AssetDep("sftp_orders"),
-    "dlt_products_source_products": dg.AssetDep("sftp_products")
-}
-print(external_asset_keys)
 
 class CustomDagsterDltTranslator(DagsterDltTranslator):
+
+    def __init__(self, external_asset_key: dg.AssetKey):
+        self.external_asset_key = external_asset_key
+
     def get_asset_spec(self, data) -> dg.AssetSpec:
         """Overrides asset spec to override upstream asset key to be a single source asset."""
         default_spec = super().get_asset_spec(data)
         return default_spec.replace_attributes(
             key=dg.AssetKey(f"dlt_{data.resource.name}"),
-            deps=[dg.AssetKey(f"sftp_{data.resource.name}")]
+            deps=[dg.AssetDep(self.external_asset_key)]
         )
     
 def create_sftp_source(resource_name: str, file_glob: str):
@@ -82,7 +80,7 @@ def create_dlt_assets(resource_name: str, file_glob: str):
             progress="log"
         ),
         name=f"{resource_name}",
-        dagster_dlt_translator=CustomDagsterDltTranslator(),
+        dagster_dlt_translator=CustomDagsterDltTranslator(external_asset_key=dg.AssetKey(f"sftp_{resource_name}")),
         group_name="dltdemo"
     )
     def assets(context: AssetExecutionContext, dlt_resource: DagsterDltResource):
