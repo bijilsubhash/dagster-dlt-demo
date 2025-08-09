@@ -21,9 +21,9 @@ from dagster_dlt import DagsterDltResource, DagsterDltTranslator, dlt_assets
 logger = Logger(__name__)
 
 external_asset_keys = {
-    "customers": dg.AssetKey("sftp_customers"),
-    "orders": dg.AssetKey("sftp_orders"),
-    "products": dg.AssetKey("sftp_products")
+    "customers_assets": dg.AssetKey("sftp_customers"),
+    "orders_assets": dg.AssetKey("sftp_orders"),
+    "products_assets": dg.AssetKey("sftp_products")
 }
 
 class CustomDagsterDltTranslator(DagsterDltTranslator):
